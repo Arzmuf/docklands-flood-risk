@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docklands Flood Safety</title>
+  <meta name="description" content="Flood safety information for Docklands, Melbourne, in your language.">
+  <meta name="theme-color" content="#0b3954">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230e7c86'/%3E%3Cpath d='M3 20q3.25-3.5 6.5 0t6.5 0 6.5 0 6.5 0V29H3z' fill='%23bfeef2'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="translations.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body data-page="index">
+  <a class="skip" href="#main" data-i18n="skip">Skip to main content</a>
+
+  <header class="topbar">
+    <div class="wrap topbar__inner">
+      <svg class="logo" viewBox="0 0 40 40" width="36" height="36" aria-hidden="true" focusable="false">
+        <rect width="40" height="40" rx="9" fill="#0e7c86"/>
+        <path d="M5 26q3.75-3.5 7.5 0t7.5 0 7.5 0 7.5 0V35H5z" fill="#bfeef2"/>
+        <path d="M27 7v14M23.5 10h7M23.5 14h7M23.5 18h7" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="brand" data-i18n="appName">Docklands Flood Safety</span>
+    </div>
+  </header>
+
+  <a class="emergency-strip" href="tel:000">
+    <svg class="emergency-strip__icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><path fill="currentColor" d="M22 14h6l3 9-4 3a20 20 0 0 0 11 11l3-4 9 3v6a4 4 0 0 1-4 4A30 30 0 0 1 18 18a4 4 0 0 1 4-4z"/></svg>
+    <span data-i18n="emergencyShort">Emergency? Call 000</span>
+  </a>
+
+  <main id="main" class="wrap">
+    <h1 data-i18n="appName">Docklands Flood Safety</h1>
+    <p class="lead" data-i18n="tagline">Know what to do if it floods.</p>
+
+    <noscript><p class="card">This page works best with JavaScript turned on. <a href="safety.html">Flood safety information</a></p></noscript>
+
+    <!-- 1. Location -->
+    <section class="card" aria-labelledby="loc-heading">
+      <h2 id="loc-heading" class="card__title">
+        <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#0e7c86" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>
+        <span data-i18n="whereAreYou">Where are you?</span>
+      </h2>
+
+      <div id="scanned" hidden>
+        <p class="scanned"><span data-i18n="scannedAt">You scanned the sign at</span> <strong id="scanned-name"></strong></p>
+        <p id="scanned-note" class="note" hidden></p>
+        <button type="button" id="not-here" class="btn-link" aria-controls="loc-fieldset" aria-expanded="false" data-i18n="notHere">Not here? Change location</button>
+      </div>
+
+      <fieldset id="loc-fieldset" class="fieldset" hidden>
+        <legend class="hint" data-i18n="whereHint">Choose the sign nearest to you.</legend>
+        <div id="loc-options" class="options"></div>
+      </fieldset>
+    </section>
+
+    <!-- 2. Language -->
+    <section class="card">
+      <fieldset class="fieldset">
+        <legend>
+          <h2 class="card__title">
+            <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#0e7c86" stroke-width="2"/><path d="M2.5 12h19M12 2.5c3 3 3 16 0 19M12 2.5c-3 3-3 16 0 19" fill="none" stroke="#0e7c86" stroke-width="1.6"/></svg>
+            <span data-i18n="langQuestion">Which language do you prefer?</span>
+          </h2>
+        </legend>
+        <div id="lang-options" class="options options--grid"></div>
+      </fieldset>
+    </section>
+
+    <!-- 3. Continue -->
+    <a id="continue" class="btn btn--primary" href="safety.html">
+      <span data-i18n="continue">Continue</span>
+      <svg class="btn__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </main>
+</body>
+</html>
