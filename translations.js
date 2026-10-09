@@ -182,7 +182,7 @@ window.TRANSLATIONS = {
     dont: {
       title: "切勿这样做",
       items: [
-        "切勿步行、骑车或驾车穿越洪水。If it's flooded, forget it——遇到积水，切勿通过。",
+        "切勿步行、骑车或驾车穿越洪水。遇到积水，切勿通过。",
         "不要让儿童在洪水中或洪水附近玩耍。",
         "不要触碰倒下的电线或水中的电器设备，请远离。",
         "不要食用接触过洪水的食物。"
@@ -272,7 +272,7 @@ window.TRANSLATIONS = {
     dont: {
       title: "Những điều KHÔNG được làm",
       items: [
-        "Không bao giờ đi bộ, đạp xe hoặc lái xe qua nước lũ. If it's flooded, forget it — đường ngập thì đừng đi.",
+        "Không bao giờ đi bộ, đạp xe hoặc lái xe qua nước lũ. Đường ngập thì đừng đi.",
         "Không để trẻ em chơi trong hoặc gần nước lũ.",
         "Không chạm vào dây điện bị đứt hoặc thiết bị điện trong nước. Hãy tránh xa.",
         "Không ăn thực phẩm đã tiếp xúc với nước lũ."
@@ -362,7 +362,7 @@ window.TRANSLATIONS = {
     dont: {
       title: "क्या नहीं करना है",
       items: [
-        "बाढ़ के पानी में से कभी पैदल न चलें, साइकिल न चलाएँ या गाड़ी न चलाएँ। If it's flooded, forget it — पानी भरा हो तो उधर न जाएँ।",
+        "बाढ़ के पानी में से कभी पैदल न चलें, साइकिल न चलाएँ या गाड़ी न चलाएँ। पानी भरा हो तो उधर न जाएँ।",
         "बच्चों को बाढ़ के पानी में या उसके पास खेलने न दें।",
         "गिरी हुई बिजली की तारों या पानी में पड़े बिजली के उपकरणों को न छुएँ। उनसे दूर रहें।",
         "बाढ़ के पानी के संपर्क में आया खाना न खाएँ।"
@@ -452,7 +452,7 @@ window.TRANSLATIONS = {
     dont: {
       title: "ما يجب ألّا تفعله",
       items: [
-        "لا تمشِ أو تركب دراجة أو تقد سيارة عبر مياه الفيضان أبدًا. \u2068If it's flooded, forget it\u2069 — إذا كان الطريق مغمورًا بالمياه، فلا تعبره.",
+        "لا تمشِ أو تركب دراجة أو تقد سيارة عبر مياه الفيضان أبدًا. إذا كان الطريق مغمورًا بالمياه، فلا تعبره.",
         "لا تدع الأطفال يلعبون في مياه الفيضان أو بالقرب منها.",
         "لا تلمس خطوط الكهرباء الساقطة أو الأجهزة الكهربائية الموجودة في الماء. ابتعد عنها.",
         "لا تأكل الطعام الذي لامس مياه الفيضان."
@@ -542,7 +542,7 @@ window.TRANSLATIONS = {
     dont: {
       title: "Yang TIDAK boleh dilakukan",
       items: [
-        "Jangan pernah berjalan, bersepeda, atau mengemudi melewati air banjir. If it's flooded, forget it — kalau banjir, jangan lewat.",
+        "Jangan pernah berjalan, bersepeda, atau mengemudi melewati air banjir. Kalau banjir, jangan lewat.",
         "Jangan biarkan anak-anak bermain di dalam atau di dekat air banjir.",
         "Jangan sentuh kabel listrik yang jatuh atau peralatan listrik di dalam air. Menjauhlah.",
         "Jangan makan makanan yang terkena air banjir."
