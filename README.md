@@ -1,7 +1,8 @@
 # Docklands Flood Safety (ENGR90051)
 
 A small, mobile-first static website for the Docklands "flood risk meter" posters.
-People scan a QR code on a poster, choose their language, and get short flood safety
+People scan a QR code on a poster. The site uses the phone's location to work out which sign
+they are at and shows a **flood risk meter** for that spot. They can then pick a language and get short flood safety
 advice based on VicSES guidance, with tap-to-call emergency numbers.
 
 - Plain HTML, CSS and vanilla JavaScript. No frameworks, no build step, no external requests.
@@ -10,18 +11,19 @@ advice based on VicSES guidance, with tap-to-call emergency numbers.
 
 > ⚠️ **Before going live**
 > 1. Have **every non-English translation reviewed by a native speaker** (see `translations.js`).
-> 2. Fill in the location notes, which currently say `TODO`, in `script.js`.
-> 3. Resolve the `TODO` fact checks listed at the top of `translations.js` and in `safety.html`.
-> 4. Re-check all safety content against current advice at <https://www.ses.vic.gov.au/>.
+> 2. Fill in the location notes, which currently say `TODO`, in `script.js`, and check each sign's `lat`/`lng`.
+> 3. Replace the **static demo risk levels** (`risk` and `AREA_RISK` in `script.js`) with real data.
+> 4. Resolve the `TODO` fact checks listed at the top of `translations.js` and in `safety.html`.
+> 5. Re-check all safety content against current advice at <https://www.ses.vic.gov.au/>.
 
 ## Files
 
 | File | What it is |
 |---|---|
-| `index.html` | Page 1: location ("You scanned the sign at…") and language choice |
+| `index.html` | Page 1: detected location, flood risk meter and language choice |
 | `safety.html` | Page 2: emergency contacts, prepare, during, what NOT to do, hazards |
 | `styles.css` | All styles (mobile-first, RTL-aware) |
-| `script.js` | **Config** (locations, languages, scan tracking) and page logic |
+| `script.js` | **Config** (locations, risk levels, languages, scan tracking) and page logic |
 | `translations.js` | All text, keyed by language code |
 | `.nojekyll` | Tells GitHub Pages to serve the files as-is |
 
@@ -34,7 +36,7 @@ python3 -m http.server 8000
 ```
 
 Then open <http://localhost:8000/index.html?loc=newquay>.
-Opening `index.html` directly from disk (double-click) also works.
+Opening `index.html` directly from disk (double-click) also works, but phone location is not available there, so it uses the `?loc=` fallback.
 
 To check the mobile view in Chrome, open DevTools → Toggle device toolbar (Ctrl/Cmd + Shift + M) and set the width to 360.
 
@@ -47,7 +49,19 @@ To check the mobile view in Chrome, open DevTools → Toggle device toolbar (Ctr
 
 Every later push to `main` redeploys automatically. All paths are relative, so nothing needs changing.
 
-## Locations and QR codes
+## Locations, risk levels and QR codes
+
+The visitor is never asked where they are. When the page opens, the phone asks
+for permission to share its location. The page then:
+
+1. **Location allowed:** finds the nearest sign within `NEAR_METRES` (500 m by default) and
+   shows its name, note and risk level. If no sign is that close, it shows the general
+   Docklands level (`AREA_RISK`).
+2. **Location denied or unavailable:** falls back to the sign in the QR code (`?loc=`),
+   or to the general Docklands level if there isn't one.
+
+The coordinates are only compared with the list of signs in the browser. They are never sent
+anywhere or stored. Location only works over HTTPS (GitHub Pages is HTTPS) or on `localhost`.
 
 Locations are in the `LOCATIONS` object at the top of `script.js`:
 
@@ -55,13 +69,25 @@ Locations are in the `LOCATIONS` object at the top of `script.js`:
 const LOCATIONS = {
   "harbour-esplanade": {
     name: "Docklands tram stop, Harbour Esplanade",
-    note: "Close to the river edge."   // optional; "" hides it
+    note: "Close to the river edge.",   // optional; "" hides it
+    lat: -37.8167, lng: 144.9455,       // where the sign is
+    risk: "high"                        // low | moderate | high | extreme
   },
   ...
 };
 ```
 
+To get a sign's coordinates, right-click its spot in Google Maps and click the numbers at the top
+of the menu to copy them. The current coordinates are approximate and marked `TODO`.
+
+**Risk levels are static demo data for now.** Change `risk` per location and `AREA_RISK` for
+Docklands overall. The needle and the "Current risk level" box update to match. Later, these
+values can be filled from a live data source in `script.js`.
+
 The key (`harbour-esplanade`) is the location id used in the QR code. Use lowercase letters, numbers and dashes, and don't rename an id once its poster is printed.
+
+**Testing location on a computer:** in Chrome DevTools, open **⋮ → More tools → Sensors** and set
+**Location** to custom coordinates (for example `-37.8167`, `144.9455`), then reload.
 
 **The URL for each poster** is:
 
@@ -84,7 +110,7 @@ https://arzmuf.github.io/docklands-flood-risk/index.html?loc=victoria-harbour
   `qrencode -o harbour-esplanade.png -s 12 -l M "https://…/index.html?loc=harbour-esplanade"`.
 
 Test-scan every printed code with both an iPhone and an Android phone before putting it up.
-An unknown or missing `?loc=` is safe: the visitor just sees the list of locations.
+An unknown or missing `?loc=` is safe: if location is also unavailable, the visitor sees the general Docklands information.
 
 ## Languages and translations
 
@@ -125,6 +151,7 @@ Because the request uses `no-cors`, the browser can't confirm success. Check the
 ## Accessibility notes
 
 - Semantic landmarks (`header`, `main`, `section`, `footer`), a skip link, and real radio buttons in `fieldset`/`legend` groups.
+- The risk meter graphic is decorative; the risk level is also written out as text, and location updates are announced (`aria-live`).
 - All tap targets are at least 48 px; calls and main buttons are 56–64 px.
 - Illustrations are decorative and hidden from screen readers (`aria-hidden`), because each one sits next to a heading or text that says the same thing.
 - The `lang` and `dir` attributes change with the chosen language, so screen readers pronounce the text correctly and Arabic is laid out right-to-left.

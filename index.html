@@ -36,26 +36,65 @@
 
     <noscript><p class="card">This page works best with JavaScript turned on. <a href="safety.html">Flood safety information</a></p></noscript>
 
-    <!-- 1. Location -->
+    <!-- 1. Location (detected from the phone, never typed in) -->
     <section class="card" aria-labelledby="loc-heading">
       <h2 id="loc-heading" class="card__title">
         <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#0e7c86" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>
-        <span data-i18n="whereAreYou">Where are you?</span>
+        <span data-i18n="yourLocation">Your location</span>
       </h2>
 
-      <div id="scanned" hidden>
-        <p class="scanned"><span data-i18n="scannedAt">You scanned the sign at</span> <strong id="scanned-name"></strong></p>
-        <p id="scanned-note" class="note" hidden></p>
-        <button type="button" id="not-here" class="btn-link" aria-controls="loc-fieldset" aria-expanded="false" data-i18n="notHere">Not here? Change location</button>
+      <div aria-live="polite">
+        <p class="here">
+          <span id="here-label" data-i18n="locating">Finding your location…</span>
+          <strong id="here-name" hidden></strong>
+        </p>
+        <p id="here-status" class="hint" hidden></p>
+        <p id="here-note" class="note" hidden></p>
       </div>
-
-      <fieldset id="loc-fieldset" class="fieldset" hidden>
-        <legend class="hint" data-i18n="whereHint">Choose the sign nearest to you.</legend>
-        <div id="loc-options" class="options"></div>
-      </fieldset>
+      <p class="privacy" data-i18n="locPrivacy">Your location stays on your phone. It is not sent or stored.</p>
     </section>
 
-    <!-- 2. Language -->
+    <!-- 2. Flood risk meter -->
+    <section class="card" aria-labelledby="risk-heading">
+      <h2 id="risk-heading" class="card__title">
+        <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17a9 9 0 0 1 18 0" fill="none" stroke="#0e7c86" stroke-width="2.6" stroke-linecap="round"/><path d="M12 17l4-6" stroke="#0b3954" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17" r="2.2" fill="#0b3954"/></svg>
+        <span data-i18n="riskTitle">Flood risk</span>
+      </h2>
+
+      <!-- Decorative: the "Current risk level" box below says the same thing in text. -->
+      <svg class="gauge" viewBox="0 0 320 190" aria-hidden="true" focusable="false">
+        <path class="gauge__seg gauge__seg--low" d="M10.0 161.9A150 150 0 0 1 51.7 61.2L108.0 115.2A72 72 0 0 0 88.0 163.5Z"/>
+        <path class="gauge__seg gauge__seg--moderate" d="M56.2 56.7A150 150 0 0 1 156.9 15.0L158.5 93.0A72 72 0 0 0 110.2 113.0Z"/>
+        <path class="gauge__seg gauge__seg--high" d="M163.1 15.0A150 150 0 0 1 263.8 56.7L209.8 113.0A72 72 0 0 0 161.5 93.0Z"/>
+        <path class="gauge__seg gauge__seg--extreme" d="M268.3 61.2A150 150 0 0 1 310.0 161.9L232.0 163.5A72 72 0 0 0 212.0 115.2Z"/>
+        <text class="gauge__text" x="56.5" y="120"><tspan class="gauge__lvl" x="56.5" data-i18n="risk.low">Low</tspan><tspan x="56.5" dy="17" data-i18n="riskWord">Risk</tspan></text>
+        <text class="gauge__text gauge__text--dark" x="117" y="59"><tspan class="gauge__lvl" x="117" data-i18n="risk.moderate">Moderate</tspan><tspan x="117" dy="17" data-i18n="riskWord">Risk</tspan></text>
+        <text class="gauge__text" x="203" y="59"><tspan class="gauge__lvl" x="203" data-i18n="risk.high">High</tspan><tspan x="203" dy="17" data-i18n="riskWord">Risk</tspan></text>
+        <text class="gauge__text" x="263.5" y="120"><tspan class="gauge__lvl" x="263.5" data-i18n="risk.extreme">Extreme</tspan><tspan x="263.5" dy="17" data-i18n="riskWord">Risk</tspan></text>
+        <g id="needle" class="gauge__needle">
+          <path d="M151 165 158.6 97h2.8l7.6 68z" fill="#0b3954"/>
+        </g>
+        <circle cx="160" cy="165" r="17" fill="#0b3954"/>
+        <circle cx="160" cy="165" r="5.5" fill="none" stroke="#fff" stroke-width="2.6"/>
+      </svg>
+
+      <div id="risk-now" class="risk-now">
+        <div class="risk-now__text">
+          <p class="risk-now__label" data-i18n="currentRisk">Current risk level</p>
+          <p id="risk-level" class="risk-now__level">…</p>
+        </div>
+        <span class="risk-now__divider" aria-hidden="true"></span>
+        <svg class="risk-now__icon" viewBox="0 0 64 64" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="27" cy="11" r="5"/>
+          <path d="M15 5l6 13h12l6-13M22 18l-2 16M32 18l2 16"/>
+          <path d="M51 14c-3 4-4.5 6.5-4.5 8.5a4.5 4.5 0 0 0 9 0c0-2-1.5-4.5-4.5-8.5z"/>
+          <path d="M6 40q5-4 10 0t10 0 10 0 10 0 10 0M6 48q5-4 10 0t10 0 10 0 10 0 10 0M6 56q5-4 10 0t10 0 10 0 10 0 10 0"/>
+        </svg>
+      </div>
+      <p class="demo-note" data-i18n="demoNote">Demo only: these risk levels are sample data, not live readings.</p>
+    </section>
+
+    <!-- 3. Language -->
     <section class="card">
       <fieldset class="fieldset">
         <legend>
@@ -68,7 +107,7 @@
       </fieldset>
     </section>
 
-    <!-- 3. Continue -->
+    <!-- 4. Continue -->
     <a id="continue" class="btn btn--primary" href="safety.html">
       <span data-i18n="continue">Continue</span>
       <svg class="btn__arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h13m-5-5 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>

@@ -5,27 +5,45 @@
 
 /* ============================== CONFIG ================================== */
 
-/* Poster locations. The key is the id used in the QR code URL:
-     index.html?loc=harbour-esplanade
+/* Poster locations. The phone's GPS position is matched to the nearest one.
    - name: shown to visitors. A plain string, or an object per language,
            e.g. { en: "NewQuay Promenade", zh: "新码头步道" }.
    - note: optional short flood-risk note. Use "" to hide it.
            Can also be a plain string or an object per language.
+   - lat, lng: where the sign is (decimal degrees). In Google Maps,
+           right-click the spot and click the numbers to copy them.
+   - risk: "low", "moderate", "high" or "extreme". Shown on the risk meter.
+           STATIC DEMO DATA for now; later this can come from a live feed.
+   The key is also used in the QR code URL (index.html?loc=newquay). It is
+   only a fallback, used when the phone can't or won't share its location.
    Ids: lowercase letters, numbers and dashes only. */
 const LOCATIONS = {
   "harbour-esplanade": {
     name: "Docklands tram stop, Harbour Esplanade",
-    note: "TODO: add a short flood-risk note for this spot (e.g. \"Close to the river edge.\")"
+    note: "TODO: add a short flood-risk note for this spot (e.g. \"Close to the river edge.\")",
+    lat: -37.8167, lng: 144.9455, // TODO: check against the real sign position
+    risk: "high"
   },
   "newquay": {
     name: "NewQuay Promenade",
-    note: "TODO: add a short flood-risk note for this spot."
+    note: "TODO: add a short flood-risk note for this spot.",
+    lat: -37.8126, lng: 144.9402, // TODO: check against the real sign position
+    risk: "moderate"
   },
   "victoria-harbour": {
     name: "Victoria Harbour, Docklands Park",
-    note: "TODO: add a short flood-risk note for this spot."
+    note: "TODO: add a short flood-risk note for this spot.",
+    lat: -37.8207, lng: 144.9399, // TODO: check against the real sign position
+    risk: "extreme"
   }
 };
+
+/* How close (in metres) the phone must be to a sign to count as "at" it.
+   Further away than this from every sign, the general Docklands level is shown. */
+const NEAR_METRES = 500;
+
+/* Risk level for Docklands as a whole (static demo data). */
+const AREA_RISK = "high";
 
 /* Languages, in the order the buttons appear.
    - code:  must match a key in translations.js
@@ -185,73 +203,124 @@ const TRACKING = {
     return label;
   }
 
+  /* ---------- location + risk meter ---------- */
+
+  var RISK_LEVELS = ["low", "moderate", "high", "extreme"];
+
+  // Needle angle in degrees from straight up: the middle of each segment.
+  function needleAngle(level) {
+    var i = RISK_LEVELS.indexOf(level);
+    return i === -1 ? 0 : -67.5 + 45 * i;
+  }
+
+  // Straight-line distance in metres between two lat/lng points.
+  function metresBetween(lat1, lng1, lat2, lng2) {
+    var rad = Math.PI / 180;
+    var dLat = (lat2 - lat1) * rad;
+    var dLng = (lng2 - lng1) * rad;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 6371000 * 2 * Math.asin(Math.sqrt(h));
+  }
+
+  // Id of the nearest sign within NEAR_METRES, or null.
+  function nearestLoc(lat, lng) {
+    var best = null, bestDist = NEAR_METRES;
+    Object.keys(LOCATIONS).forEach(function (id) {
+      var L = LOCATIONS[id];
+      if (typeof L.lat !== "number" || typeof L.lng !== "number") return;
+      var d = metresBetween(lat, lng, L.lat, L.lng);
+      if (d <= bestDist) { best = id; bestDist = d; }
+    });
+    return best;
+  }
+
   /* ---------- index.html ---------- */
 
   function initIndex() {
     var params = new URLSearchParams(location.search);
-    var loc = validLoc(params.get("loc"));
+    var qrLoc = validLoc(params.get("loc"));
     var lang = startingLang(params.get("lang"));
 
-    var scanned = document.getElementById("scanned");
-    var scannedName = document.getElementById("scanned-name");
-    var scannedNote = document.getElementById("scanned-note");
-    var notHere = document.getElementById("not-here");
-    var locFieldset = document.getElementById("loc-fieldset");
-    var locOptions = document.getElementById("loc-options");
+    // "locating" → waiting for the phone; "gps" → matched a sign;
+    // "outside" → not near any sign; "nogps" → location denied or unavailable.
+    var state = "locating";
+    var loc = null;
+
+    var hereLabel = document.getElementById("here-label");
+    var hereName = document.getElementById("here-name");
+    var hereStatus = document.getElementById("here-status");
+    var hereNote = document.getElementById("here-note");
+    var needle = document.getElementById("needle");
+    var riskNow = document.getElementById("risk-now");
+    var riskLevel = document.getElementById("risk-level");
     var langOptions = document.getElementById("lang-options");
     var cont = document.getElementById("continue");
 
-    function renderLocations() {
-      locOptions.textContent = "";
-      Object.keys(LOCATIONS).forEach(function (id) {
-        locOptions.appendChild(makeOption("loc", id, localText(LOCATIONS[id].name, lang), id === loc));
-      });
+    // Point an element at a translation key; applyLanguage() fills it in.
+    function setKey(el, key) {
+      if (key) el.setAttribute("data-i18n", key);
+      else el.removeAttribute("data-i18n");
+      el.hidden = !key;
     }
 
-    function renderScanned() {
-      if (!loc) return;
-      scannedName.textContent = localText(LOCATIONS[loc].name, lang);
-      var note = localText(LOCATIONS[loc].note, lang);
-      scannedNote.textContent = note;
-      scannedNote.hidden = !note;
-    }
+    function render() {
+      var locating = state === "locating";
+      var status = null;
+      if (state === "outside") status = "locOutside";
+      if (state === "nogps") status = loc ? "locNoGps" : "locUnknown";
 
-    function updateContinue() {
+      setKey(hereLabel, locating ? "locating" : "youAreAt");
+      setKey(hereStatus, status);
+
+      var level = locating ? "" : (loc ? LOCATIONS[loc].risk : AREA_RISK);
+      if (RISK_LEVELS.indexOf(level) === -1) level = "";
+      setKey(riskLevel, level ? "risk." + level : null);
+      riskLevel.hidden = false;
+      if (!level) riskLevel.textContent = "…";
+      riskNow.setAttribute("data-level", level);
+      needle.style.transform = "rotate(" + needleAngle(level) + "deg)";
+
+      applyLanguage(lang);
+
+      hereName.hidden = locating;
+      hereName.textContent = loc ? localText(LOCATIONS[loc].name, lang) : t(lang, "defaultLocation");
+      var note = loc && !locating ? localText(LOCATIONS[loc].note, lang) : "";
+      hereNote.textContent = note;
+      hereNote.hidden = !note;
+
       cont.href = buildUrl("safety.html", loc, lang);
+    }
+
+    // Fall back to the sign in the QR code, or to Docklands in general.
+    function noPosition() {
+      if (state !== "locating") return;
+      state = "nogps";
+      loc = qrLoc;
+      render();
+    }
+
+    function locate() {
+      if (!navigator.geolocation || window.isSecureContext === false) { noPosition(); return; }
+      // The coordinates are only compared with LOCATIONS here and then dropped.
+      navigator.geolocation.getCurrentPosition(function (pos) {
+        loc = nearestLoc(pos.coords.latitude, pos.coords.longitude);
+        state = loc ? "gps" : "outside";
+        render();
+      }, noPosition, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+      // The browser's permission prompt has no timeout; don't wait on it forever.
+      // A later answer still updates the page.
+      setTimeout(noPosition, 15000);
     }
 
     LANGUAGES.forEach(function (L) {
       langOptions.appendChild(makeOption("lang", L.code, L.name, L.code === lang, L.lang, L.dir));
     });
 
-    if (loc) {
-      scanned.hidden = false;
-      locFieldset.hidden = true;
-    } else {
-      scanned.hidden = true;
-      locFieldset.hidden = false;
-    }
-
-    notHere.addEventListener("click", function () {
-      scanned.hidden = true;
-      locFieldset.hidden = false;
-      notHere.setAttribute("aria-expanded", "true");
-      var first = locOptions.querySelector("input:checked") || locOptions.querySelector("input");
-      if (first) first.focus();
-    });
-
-    locOptions.addEventListener("change", function (e) {
-      loc = validLoc(e.target.value);
-      updateContinue();
-    });
-
     langOptions.addEventListener("change", function (e) {
       if (!getLang(e.target.value)) return;
       lang = e.target.value;
-      applyLanguage(lang);
-      renderLocations();
-      renderScanned();
-      updateContinue();
+      render();
     });
 
     cont.addEventListener("click", function () {
@@ -259,10 +328,8 @@ const TRACKING = {
       sendScan(loc, lang);
     });
 
-    applyLanguage(lang);
-    renderLocations();
-    renderScanned();
-    updateContinue();
+    render();
+    locate();
   }
 
   /* ---------- safety.html ---------- */

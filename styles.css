@@ -95,8 +95,48 @@ a { color: var(--teal-dark); }
 .card__title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .card__icon { width: 30px; height: 30px; flex: none; }
 
-.scanned { font-size: 1.1rem; margin: 0 0 8px; }
-.scanned strong { display: block; font-size: 1.25rem; color: var(--navy); }
+.here { font-size: 1.1rem; margin: 0 0 8px; }
+.here strong { display: block; font-size: 1.25rem; color: var(--navy); }
+.privacy { margin: 8px 0 0; font-size: .9rem; color: var(--muted); }
+
+/* ---------- flood risk meter ---------- */
+:root {
+  --risk-low: #1e8e3e;
+  --risk-moderate: #f5c518;
+  --risk-high: #e0650f;
+  --risk-extreme: #d0182b;
+}
+.gauge { display: block; width: 100%; max-width: 22rem; margin: 0 auto 14px; }
+.gauge__seg--low { fill: var(--risk-low); }
+.gauge__seg--moderate { fill: var(--risk-moderate); }
+.gauge__seg--high { fill: var(--risk-high); }
+.gauge__seg--extreme { fill: var(--risk-extreme); }
+.gauge__text { fill: #fff; font-size: 11px; font-weight: 600; text-anchor: middle; text-transform: uppercase; }
+.gauge__text--dark { fill: var(--navy); }
+.gauge__lvl { font-size: 13px; font-weight: 800; }
+.gauge__needle { transform-box: view-box; transform-origin: 160px 165px; }
+@media (prefers-reduced-motion: no-preference) {
+  .gauge__needle { transition: transform .9s cubic-bezier(.3, 1.4, .5, 1); }
+}
+
+.risk-now {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 20px; border-radius: 22px;
+  background: #eef2f4; border-inline-start: 8px solid var(--line);
+}
+.risk-now[data-level="low"] { background: #e6f4ea; border-color: var(--risk-low); }
+.risk-now[data-level="moderate"] { background: #fff7d6; border-color: var(--risk-moderate); }
+.risk-now[data-level="high"] { background: #fdeadf; border-color: var(--risk-high); }
+.risk-now[data-level="extreme"] { background: #fde2e4; border-color: var(--risk-extreme); }
+.risk-now__text { flex: 1 1 auto; min-width: 0; }
+.risk-now__label { margin: 0; font-weight: 800; text-transform: uppercase; letter-spacing: .02em; }
+.risk-now__level {
+  margin: 0; font-size: clamp(1.9rem, 9vw, 2.6rem); font-weight: 900; line-height: 1.1;
+  text-transform: uppercase; overflow-wrap: anywhere;
+}
+.risk-now__divider { align-self: stretch; width: 2px; background: var(--ink); margin-block: 6px; flex: none; }
+.risk-now__icon { width: 60px; height: 60px; flex: none; color: var(--ink); }
+.demo-note { margin: 10px 0 0; font-size: .85rem; color: var(--muted); font-style: italic; }
 
 .note {
   background: var(--amber-bg); border-inline-start: 5px solid var(--amber);
