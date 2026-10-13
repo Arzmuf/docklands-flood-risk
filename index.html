@@ -36,7 +36,20 @@
 
     <noscript><p class="card">This page works best with JavaScript turned on. <a href="safety.html">Flood safety information</a></p></noscript>
 
-    <!-- 1. Location (detected from the phone, never typed in) -->
+    <!-- 1. Language (first, so everything below is read in it) -->
+    <section class="card">
+      <fieldset class="fieldset">
+        <legend>
+          <h2 class="card__title">
+            <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#0e7c86" stroke-width="2"/><path d="M2.5 12h19M12 2.5c3 3 3 16 0 19M12 2.5c-3 3-3 16 0 19" fill="none" stroke="#0e7c86" stroke-width="1.6"/></svg>
+            <span data-i18n="langQuestion">Which language do you prefer?</span>
+          </h2>
+        </legend>
+        <div id="lang-options" class="options options--grid"></div>
+      </fieldset>
+    </section>
+
+    <!-- 2. Location (detected from the phone, never typed in) -->
     <section class="card" aria-labelledby="loc-heading">
       <h2 id="loc-heading" class="card__title">
         <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="#0e7c86" d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>
@@ -54,7 +67,7 @@
       <p class="privacy" data-i18n="locPrivacy">Your location stays on your phone. It is not sent or stored.</p>
     </section>
 
-    <!-- 2. Flood risk meter -->
+    <!-- 3. Flood risk meter -->
     <section class="card" aria-labelledby="risk-heading">
       <h2 id="risk-heading" class="card__title">
         <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 17a9 9 0 0 1 18 0" fill="none" stroke="#0e7c86" stroke-width="2.6" stroke-linecap="round"/><path d="M12 17l4-6" stroke="#0b3954" stroke-width="2.4" stroke-linecap="round"/><circle cx="12" cy="17" r="2.2" fill="#0b3954"/></svg>
@@ -92,19 +105,6 @@
         </svg>
       </div>
       <p class="demo-note" data-i18n="demoNote">Demo only: these risk levels are sample data, not live readings.</p>
-    </section>
-
-    <!-- 3. Language -->
-    <section class="card">
-      <fieldset class="fieldset">
-        <legend>
-          <h2 class="card__title">
-            <svg class="card__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9.5" fill="none" stroke="#0e7c86" stroke-width="2"/><path d="M2.5 12h19M12 2.5c3 3 3 16 0 19M12 2.5c-3 3-3 16 0 19" fill="none" stroke="#0e7c86" stroke-width="1.6"/></svg>
-            <span data-i18n="langQuestion">Which language do you prefer?</span>
-          </h2>
-        </legend>
-        <div id="lang-options" class="options options--grid"></div>
-      </fieldset>
     </section>
 
     <!-- 4. Continue -->

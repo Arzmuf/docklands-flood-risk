@@ -20,7 +20,7 @@ advice based on VicSES guidance, with tap-to-call emergency numbers.
 
 | File | What it is |
 |---|---|
-| `index.html` | Page 1: detected location, flood risk meter and language choice |
+| `index.html` | Page 1: language choice, detected location and flood risk meter |
 | `safety.html` | Page 2: emergency contacts, prepare, during, what NOT to do, hazards |
 | `styles.css` | All styles (mobile-first, RTL-aware) |
 | `script.js` | **Config** (locations, risk levels, languages, scan tracking) and page logic |

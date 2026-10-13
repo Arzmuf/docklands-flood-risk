@@ -148,7 +148,7 @@ a { color: var(--teal-dark); }
 .hint { color: var(--muted); margin-bottom: 10px; }
 
 .options { display: grid; gap: 10px; }
-.options--grid { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+.options--grid { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
 
 .option {
   display: flex; align-items: center; gap: 12px;
